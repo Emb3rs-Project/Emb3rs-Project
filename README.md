@@ -1,11 +1,29 @@
-# Emb3rs Project
 
-teste 123
 
-## SUB Cate
+# Structure of Repositories
 
-123123
+ModuleSystem/---
+- ms-manager
+- ms-reporter
+- ms-wrapper
+- ms-core
+- ms-mapper-service
+- ms-network
 
-### SUB SUB CAT
+Platform
+- web
 
-123123
+Module/---
+- m-core-functionalities
+- m-gis
+- m-market
+- m-business
+- m-teo
+
+Prototypes/---
+- p-core-functionalities
+- p-gis
+- p-market
+- p-business
+- p-teo
+
