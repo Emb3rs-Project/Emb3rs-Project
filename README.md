@@ -1,4 +1,6 @@
 
+![](EMB3Rs-Logo.jpg?raw=true)
+
 
 # Structure of Repositories
 
