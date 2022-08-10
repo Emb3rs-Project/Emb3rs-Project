@@ -12,13 +12,12 @@ services:
             - pgsql
             - redis
             - m_cf
-            # - ms_manager
+            - ms_manager
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
             - '${APP_PORT:-80}:80'
             - '${HMR_PORT:-8080}:8080'
-        # env_file: ../../platform/.env
         environment:
             DB_DATABASE: '${DB_DATABASE}'
             DB_USERNAME: '${DB_USERNAME}'
