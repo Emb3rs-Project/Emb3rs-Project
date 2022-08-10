@@ -1,5 +1,5 @@
-# For more information: https://laravel.com/docs/sail
 version: '3'
+
 services:
     platform:
         build:
@@ -13,11 +13,11 @@ services:
             - redis
             - m_cf
             - ms_manager
-        extra_hosts:
-            - 'host.docker.internal:host-gateway'
         ports:
             - '${APP_PORT:-80}:80'
             - '${HMR_PORT:-8080}:8080'
+        volumes:
+            - '../../platform:/var/www/html'
         environment:
             DB_DATABASE: '${DB_DATABASE}'
             DB_USERNAME: '${DB_USERNAME}'
@@ -30,8 +30,8 @@ services:
             LARAVEL_SAIL: 1
             XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
             XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
-        volumes:
-            - '../../platform:/var/www/html'
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
         networks:
             - embers
 
@@ -75,28 +75,6 @@ services:
 
     ms_manager:
         image: ghcr.io/emb3rs-project/ms-grpc-manager:prod
-        ports:
-            - 50041:50041
-        environment:
-            GRPC_VERBOSITY: DEBUG
-            GRPC_TRACE: http
-            GRPC_HOST: 0.0.0.0
-            GRPC_PORT: 50041
-
-            CF_HOST: m_cf
-            CF_PORT: 50051
-            GIS_HOST: m_gis
-            GIS_PORT: 50052
-            TEO_HOST: m_teo
-            TEO_PORT: 50053
-            MM_HOST: m_mm
-            MM_PORT: 50054
-            BM_HOST: m_bm
-            BM_PORT: 50055
-
-        command: "export PYTHONPATH=ms_grpc/plibs:module"
-        networks:
-            - embers
         depends_on:
             - m_cf
             - m_gis
@@ -109,6 +87,26 @@ services:
             - m_teo
             - m_mm
             - m_bm
+        ports:
+            - 50041:50041
+        environment:
+            GRPC_VERBOSITY: DEBUG
+            GRPC_TRACE: http
+            GRPC_HOST: 0.0.0.0
+            GRPC_PORT: 50041
+            CF_HOST: m_cf
+            CF_PORT: 50051
+            GIS_HOST: m_gis
+            GIS_PORT: 50052
+            TEO_HOST: m_teo
+            TEO_PORT: 50053
+            MM_HOST: m_mm
+            MM_PORT: 50054
+            BM_HOST: m_bm
+            BM_PORT: 50055
+        command: "export PYTHONPATH=ms_grpc/plibs:module"
+        networks:
+            - embers
 
     m_cf:
         image: ghcr.io/emb3rs-project/m-grpc-core-functionalities:prod
@@ -178,6 +176,7 @@ services:
 networks:
     embers:
         driver: bridge
+
 volumes:
     sail-pgsql:
         driver: local
