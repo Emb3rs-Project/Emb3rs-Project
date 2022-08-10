@@ -18,8 +18,8 @@ docker-dev-build: install
 	@read user_response; \
 	if echo $$user_response | grep -iq '^n'; then \
 		echo '--> Please ask one of your teammates to help you with this.'; \
-    	exit 1; \
-    fi
+		exit 1; \
+	fi
 
 	@echo "--> Verifying with .env file exists within platform"
 	@find . -name ".env" | cp docker/dev/.env.dev platform/.env
@@ -27,10 +27,10 @@ docker-dev-build: install
 	@echo '--> Building the development docker'
 	@${DEV_DOCKER_BASE_CMD} up --build -d
 
-	@echo '--> Updating Platform Composer in development docker (REMOVE AFTER CHANGE REPOSITORIES OF PLATFORM)'
+	@echo '--> Updating Platform Composer in development docker (REMOVE AFTER CHANGE REPOSITORIES PROPERTY IN COMPOSER.JSON OF PLATFORM REPOSITORY)'
 	@${DEV_DOCKER_BASE_CMD} exec platform composer update
 
-	# @echo '--> Instaling Platform Composer dependencies in development docker'
+	# @echo '--> Instaling Platform Composer dependencies in development docker' (UNCOMMENT AFTER CHANGE COMPOSER.JSON OF PLATFORM REPOSITORY)
 	# @${DEV_DOCKER_BASE_CMD} exec platform composer install --optimize-autoloader --no-dev
 
 	@echo '--> Adding permission to read Platform Laravel logs in development docker'

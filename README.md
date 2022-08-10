@@ -27,13 +27,14 @@ Prototypes/---
 - p-gis
 - p-market
 - p-business
-- p-teo
-
+- p-teo  
 
 # Setup Development Environment
 Below have instructions about how setup project for development environment.
 
-## Initial step
+**NOTE:** *Commands that run docker maybe needs `sudo` permission, if necessary use `sudo` before each command, .e.g: `sudo make ...`*  
+
+### Initial Step
 To start configuration, run:
 ```shell
 make install
@@ -45,9 +46,9 @@ Build containers running:
 make docker-dev-build
 ```
 
-The script will ask to you if you paste the Nova path in platform, awnser with y or n.
+The script will ask if did you paste the Laravel Nova path in platform, then answer with y or n.
 
-After build, run below command to up containers:
+After build, run command to up containers:
 ```shell
 make docker-dev-up
 ```
