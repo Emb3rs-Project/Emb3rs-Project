@@ -56,7 +56,12 @@ make docker-dev-up
 **Check if the app is running ok:** http://localhost:80
 
 ## Docker Compose Commands with Makefile
-**NOTE**: *If you want to run qa environment, change dev to qa (e.g: make docker-qa-build, make docker-qa-up)*  
+**NOTE**: *If you want to run QA environment, change dev to qa (e.g: make install-qa, make docker-qa-build, make docker-qa-up)*  
+
+Initializing requirements:
+```shell
+make install-dev
+```
 
 Build containers running:
 ```shell
