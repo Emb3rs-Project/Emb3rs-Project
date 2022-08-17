@@ -37,7 +37,7 @@ Below have instructions about how setup project for development environment.
 ### Initial Step
 To start configuration, run:
 ```shell
-make install
+make install-dev
 ```
 
 ## Building and running Docker Compose
