@@ -1,0 +1,191 @@
+version: '3'
+
+services:
+    platform:
+        build:
+            context: ../../platform
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
+        image: sail-8.1/app
+        depends_on:
+            - pgsql
+            - redis
+            - ms_manager
+            - m_cf
+        ports:
+            - '${APP_PORT:-80}:80'
+            - '${HMR_PORT:-8080}:8080'
+        volumes:
+            - 'sail-pgsql:/var/lib/postgresql/data'
+            - '../../platform:/var/www/html'
+        environment:
+            DB_DATABASE: '${DB_DATABASE}'
+            DB_USERNAME: '${DB_USERNAME}'
+            DB_PASSWORD: '${DB_PASSWORD:-secret}'
+            GRPC_MANAGER_HOST: ms_manager
+            GRPC_MANAGER_PORT: 50041
+            GRPC_CF_HOST: m_cf
+            GRPC_CF_PORT: 50051
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        networks:
+            - embers
+
+    pgsql:
+        image: 'postgres:14'
+        ports:
+            - '${FORWARD_DB_PORT:-5432}:5432'
+        environment:
+            PGPASSWORD: '${DB_PASSWORD:-secret}'
+            POSTGRES_DB: '${DB_DATABASE}'
+            POSTGRES_USER: '${DB_USERNAME}'
+            POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+        networks:
+            - embers
+        healthcheck:
+            test:
+                [
+                    "CMD",
+                    "pg_isready",
+                    "-q",
+                    "-d",
+                    "${DB_DATABASE}",
+                    "-U",
+                    "${DB_USERNAME}"
+                ]
+            retries: 3
+            timeout: 5s
+
+    redis:
+        image: 'redis:alpine'
+        ports:
+            - '${FORWARD_REDIS_PORT:-6379}:6379'
+        volumes:
+            - 'sail-redis:/data'
+        networks:
+            - embers
+        healthcheck:
+            test: [ "CMD", "redis-cli", "ping" ]
+            retries: 3
+            timeout: 5s
+
+    ms_manager:
+        image: ghcr.io/emb3rs-project/ms-grpc-manager:qa
+        depends_on:
+            - m_cf
+            - m_gis
+            - m_teo
+            - m_mm
+            - m_bm
+        links:
+            - m_cf
+            - m_gis
+            - m_teo
+            - m_mm
+            - m_bm
+        ports:
+            - 50041:50041
+        environment:
+            GRPC_VERBOSITY: DEBUG
+            GRPC_TRACE: http
+            GRPC_HOST: 0.0.0.0
+            GRPC_PORT: 50041
+            CF_HOST: m_cf
+            CF_PORT: 50051
+            GIS_HOST: m_gis
+            GIS_PORT: 50052
+            TEO_HOST: m_teo
+            TEO_PORT: 50053
+            MM_HOST: m_mm
+            MM_PORT: 50054
+            BM_HOST: m_bm
+            BM_PORT: 50055
+            DATABASE_URL: 'postgresql+psycopg2://${DB_USERNAME}:${DB_PASSWORD:-secret}@${DB_CONNECTION:-pgsql}:${DB_PORT:-5432}/${DB_DATABASE}'
+        command: "export PYTHONPATH=ms-grpc/plibs:module"
+        networks:
+            - embers
+
+    m_cf:
+        image: ghcr.io/emb3rs-project/m-grpc-core-functionalities:qa
+        ports:
+            - 50051:50051
+        environment:
+            GRPC_VERBOSITY: DEBUG
+            GRPC_TRACE: http
+            GRPC_HOST: 0.0.0.0
+            GRPC_PORT: 50051
+        command: "export PYTHONPATH=ms_grpc/plibs:module"
+        networks:
+            - embers
+
+    m_gis:
+        image: ghcr.io/emb3rs-project/m-grpc-gis:qa
+        ports:
+            - 50052:50052
+        volumes:
+            - './gurobi.lic:/app/gurobi.lic'
+        environment:
+            GRPC_VERBOSITY: DEBUG
+            GRPC_TRACE: http
+            GRPC_HOST: 0.0.0.0
+            GRPC_PORT: 50052
+            GRB_LICENSE_FILE: gurobi.lic
+        command: "export PYTHONPATH=ms-grpc/plibs:module"
+        networks:
+            - embers
+
+    m_teo:
+        image: ghcr.io/emb3rs-project/m-grpc-teo:qa
+        ports:
+            - 50053:50053
+        volumes:
+            - './gurobi.lic:/app/gurobi.lic'
+        environment:
+            GRPC_VERBOSITY: DEBUG
+            GRPC_TRACE: http
+            GRPC_HOST: 0.0.0.0
+            GRPC_PORT: 50053
+            GRB_LICENSE_FILE: gurobi.lic
+        command: "export PYTHONPATH=ms-grpc/plibs:module"
+        networks:
+            - embers
+
+    m_mm:
+        image: ghcr.io/emb3rs-project/m-grpc-market:qa
+        ports:
+            - 50054:50054
+        volumes:
+            - './gurobi.lic:/app/gurobi.lic'
+        environment:
+            GRPC_VERBOSITY: DEBUG
+            GRPC_TRACE: http
+            GRPC_HOST: 0.0.0.0
+            GRPC_PORT: 50054
+            GRB_LICENSE_FILE: gurobi.lic
+        command: "export PYTHONPATH=ms_grpc/plibs:module"
+        networks:
+            - embers
+
+    m_bm:
+        image: ghcr.io/emb3rs-project/m-grpc-business:qa
+        ports:
+            - 50055:50055
+        environment:
+            GRPC_VERBOSITY: DEBUG
+            GRPC_TRACE: http
+            GRPC_HOST: 0.0.0.0
+            GRPC_PORT: 50055
+        command: "export PYTHONPATH=ms-grpc/plibs:module"
+        networks:
+            - embers
+
+networks:
+    embers:
+        driver: bridge
+
+volumes:
+    sail-pgsql:
+        driver: local
+    sail-redis:
+        driver: local
