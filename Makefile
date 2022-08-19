@@ -1,6 +1,12 @@
 install-client:
 	@echo '--> Initializing client requirements'
-	@python -m venv client/venv
+	@if ! python3 -m venv --help &>/dev/null; then \
+	  apt install -y python3-venv; \
+	fi
+	@if ! pip --version &>/dev/null; then \
+	  apt install -y python3-pip; \
+	fi
+	@python3 -m venv client/venv
 	@. client/venv/bin/activate && \
 	pip install -r client/requirements.txt
 
@@ -8,7 +14,7 @@ request-client:
 	@echo '--> Running client gRPC request to Manager Simulation'
 	@. client/venv/bin/activate && \
 	cd client && \
-	PYTHONPATH=$PYTHONPATH:ms_grpc/plibs ${args} python server.py
+	PYTHONPATH=$PYTHONPATH:ms_grpc/plibs ${args} python3 server.py
 
 DEV_DOCKER_ENV_FILE := docker/dev/.env.dev
 DEV_DOCKER_COMPOSE_FILE := docker/dev/docker-compose.yml

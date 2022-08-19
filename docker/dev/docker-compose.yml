@@ -36,7 +36,7 @@ services:
             - embers
 
     pgsql:
-        image: 'postgres:14'
+        image: postgres:14
         ports:
             - '${FORWARD_DB_PORT:-5432}:5432'
         environment:
@@ -61,7 +61,7 @@ services:
             timeout: 5s
 
     redis:
-        image: 'redis:alpine'
+        image: redis:alpine
         ports:
             - '${FORWARD_REDIS_PORT:-6379}:6379'
         volumes:
@@ -74,7 +74,7 @@ services:
             timeout: 5s
 
     ms_manager:
-        image: ghcr.io/emb3rs-project/ms-grpc-manager:prod
+        image: ghcr.io/emb3rs-project/ms-grpc-manager:qa
         depends_on:
             - m_cf
             - m_gis
@@ -88,7 +88,7 @@ services:
             - m_mm
             - m_bm
         ports:
-            - 50041:50041
+            - '50041:50041'
         environment:
             GRPC_VERBOSITY: DEBUG
             GRPC_TRACE: http
@@ -104,14 +104,15 @@ services:
             MM_PORT: 50054
             BM_HOST: m_bm
             BM_PORT: 50055
+            DATABASE_URL: 'postgresql+psycopg2://${DB_USERNAME}:${DB_PASSWORD:-secret}@${DB_CONNECTION:-pgsql}:${DB_PORT:-5432}/${DB_DATABASE}'
         command: "export PYTHONPATH=ms_grpc/plibs:module"
         networks:
             - embers
 
     m_cf:
-        image: ghcr.io/emb3rs-project/m-grpc-core-functionalities:prod
+        image: ghcr.io/emb3rs-project/m-grpc-core-functionalities:qa
         ports:
-            - 50051:50051
+            - '50051:50051'
         environment:
             GRPC_VERBOSITY: DEBUG
             GRPC_TRACE: http
@@ -122,48 +123,57 @@ services:
             - embers
 
     m_gis:
-        image: ghcr.io/emb3rs-project/embers-gis-module:prod
+        image: ghcr.io/emb3rs-project/embers-gis-module:qa
         ports:
-            - 50052:50052
+            - '50052:50052'
+        volumes:
+            - './gurobi.lic:/app/gurobi.lic'
         environment:
             GRPC_VERBOSITY: DEBUG
             GRPC_TRACE: http
             GRPC_HOST: 0.0.0.0
             GRPC_PORT: 50052
+            GRB_LICENSE_FILE: gurobi.lic
         command: "export PYTHONPATH=ms-grpc/plibs:module"
         networks:
             - embers
 
     m_teo:
-        image: ghcr.io/emb3rs-project/embers-teo-module:prod
+        image: ghcr.io/emb3rs-project/embers-teo-module:qa
         ports:
-            - 50053:50053
+            - '50053:50053'
+        volumes:
+            - './gurobi.lic:/app/gurobi.lic'
         environment:
             GRPC_VERBOSITY: DEBUG
             GRPC_TRACE: http
             GRPC_HOST: 0.0.0.0
             GRPC_PORT: 50053
+            GRB_LICENSE_FILE: gurobi.lic
         command: "export PYTHONPATH=ms-grpc/plibs:module"
         networks:
             - embers
 
     m_mm:
-        image: ghcr.io/emb3rs-project/embers-market-module:prod
+        image: ghcr.io/emb3rs-project/embers-market-module:qa
         ports:
-            - 50054:50054
+            - '50054:50054'
+        volumes:
+            - './gurobi.lic:/app/gurobi.lic'
         environment:
             GRPC_VERBOSITY: DEBUG
             GRPC_TRACE: http
             GRPC_HOST: 0.0.0.0
             GRPC_PORT: 50054
+            GRB_LICENSE_FILE: gurobi.lic
         command: "export PYTHONPATH=ms-grpc/plibs:module"
         networks:
             - embers
 
     m_bm:
-        image: ghcr.io/emb3rs-project/embers-business-module:prod
+        image: ghcr.io/emb3rs-project/embers-business-module:qa
         ports:
-            - 50055:50055
+            - '50055:50055'
         environment:
             GRPC_VERBOSITY: DEBUG
             GRPC_TRACE: http
