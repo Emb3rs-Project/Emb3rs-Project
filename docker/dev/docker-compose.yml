@@ -123,7 +123,7 @@ services:
             - embers
 
     m_gis:
-        image: ghcr.io/emb3rs-project/embers-gis-module:qa
+        image: ghcr.io/emb3rs-project/m-grpc-gis:qa
         ports:
             - '50052:50052'
         volumes:
@@ -139,7 +139,7 @@ services:
             - embers
 
     m_teo:
-        image: ghcr.io/emb3rs-project/embers-teo-module:qa
+        image: ghcr.io/emb3rs-project/m-grpc-teo:qa
         ports:
             - '50053:50053'
         volumes:
@@ -155,7 +155,7 @@ services:
             - embers
 
     m_mm:
-        image: ghcr.io/emb3rs-project/embers-market-module:qa
+        image: ghcr.io/emb3rs-project/m-grpc-market:qa
         ports:
             - '50054:50054'
         volumes:
@@ -171,7 +171,7 @@ services:
             - embers
 
     m_bm:
-        image: ghcr.io/emb3rs-project/embers-business-module:qa
+        image: ghcr.io/emb3rs-project/m-grpc-business:qa
         ports:
             - '50055:50055'
         environment:

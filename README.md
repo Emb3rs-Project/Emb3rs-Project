@@ -41,6 +41,11 @@ make install-dev
 ```
 
 ## Building and running Docker Compose
+Install requirements:
+```shell
+make install-dev # or install-qa
+```
+
 Build containers running:
 ```shell
 make docker-dev-build

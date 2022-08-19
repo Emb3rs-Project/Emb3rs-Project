@@ -1,6 +1,3 @@
 [submodule "platform"]
 	path = platform
 	url = git@github.com:Emb3rs-Project/platform.git
-[submodule "ms-grpc"]
-	path = client/ms_grpc
-	url = git@github.com:Emb3rs-Project/ms-grpc.git

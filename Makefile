@@ -1,3 +1,5 @@
+MS_GRPC_PLIBS_PATH := ../platform/ms-grpc/plibs
+
 install-client:
 	@echo '--> Initializing client requirements'
 	@if ! python3 -m venv --help &>/dev/null; then \
@@ -14,7 +16,7 @@ request-client:
 	@echo '--> Running client gRPC request to Manager Simulation'
 	@. client/venv/bin/activate && \
 	cd client && \
-	PYTHONPATH=$PYTHONPATH:ms_grpc/plibs ${args} python3 server.py
+	PYTHONPATH=$PYTHONPATH:${MS_GRPC_PLIBS_PATH} ${args} python3 server.py
 
 DEV_DOCKER_ENV_FILE := docker/dev/.env.dev
 DEV_DOCKER_COMPOSE_FILE := docker/dev/docker-compose.yml
@@ -22,17 +24,14 @@ DEV_DOCKER_BASE_CMD := docker-compose -f ${DEV_DOCKER_COMPOSE_FILE} --env-file $
 
 install-dev:
 	@echo '--> Initializing development requirements'
-	@git submodule init
-	@git submodule update
+	@git submodule update --init --recursive
 	@cp docker/dev/.env.dev platform/.env
-	@cd platform && git submodule init
-	@cd platform && git submodule update
 
 docker-dev:
 	@echo '--> Running custom command in development docker'
 	@${DEV_DOCKER_BASE_CMD} ${cmd}
 
-docker-dev-build: install-dev
+docker-dev-build:
 	@echo '--> Did you paste Laravel Nova licensed folder within path /platform/.? (y/n)'
 	@read user_response; \
 	if echo $$user_response | grep -iq '^n'; then \
@@ -92,11 +91,8 @@ QA_DOCKER_BASE_CMD := docker-compose -f ${QA_DOCKER_COMPOSE_FILE} --env-file ${Q
 
 install-qa:
 	@echo '--> Initializing QA requirements'
-	@git submodule init
-	@git submodule update
+	@git submodule update --init --recursive
 	@cp docker/qa/.env.qa platform/.env
-	@cd platform && git submodule init
-	@cd platform && git submodule update
 
 docker-qa:
 	@echo '--> Running custom command in QA docker'
