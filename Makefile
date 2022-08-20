@@ -2,10 +2,10 @@ MS_GRPC_PLIBS_PATH := ../platform/ms-grpc/plibs
 
 install-client:
 	@echo '--> Initializing client requirements'
-	@if ! python3 -m venv --help &>/dev/null; then \
+	@if ! python3 -m venv --help; then \
 	  apt install -y python3-venv; \
 	fi
-	@if ! pip --version &>/dev/null; then \
+	@if ! pip --version; then \
 	  apt install -y python3-pip; \
 	fi
 	@python3 -m venv client/venv
