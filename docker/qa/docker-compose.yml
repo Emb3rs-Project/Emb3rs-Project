@@ -102,7 +102,10 @@ services:
             BM_HOST: m_bm
             BM_PORT: 50055
             DATABASE_URL: 'postgresql+psycopg2://${DB_USERNAME}:${DB_PASSWORD:-secret}@${DB_CONNECTION:-pgsql}:${DB_PORT:-5432}/${DB_DATABASE}'
+            GIS_TEO_ITERATION_MODE: True
         command: "export PYTHONPATH=ms-grpc/plibs:module"
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
         networks:
             - embers
 
