@@ -74,7 +74,7 @@ services:
             timeout: 5s
 
     ms_manager:
-        image: ghcr.io/emb3rs-project/ms-grpc-manager:qa
+        image: ghcr.io/emb3rs-project/ms-grpc-manager:dev
         depends_on:
             - m_cf
             - m_gis
@@ -110,7 +110,7 @@ services:
             - embers
 
     m_cf:
-        image: ghcr.io/emb3rs-project/m-grpc-core-functionalities:qa
+        image: ghcr.io/emb3rs-project/m-grpc-core-functionalities:dev
         ports:
             - '50051:50051'
         environment:
@@ -123,7 +123,7 @@ services:
             - embers
 
     m_gis:
-        image: ghcr.io/emb3rs-project/m-grpc-gis:qa
+        image: ghcr.io/emb3rs-project/m-grpc-gis:dev
         ports:
             - '50052:50052'
         volumes:
@@ -139,7 +139,7 @@ services:
             - embers
 
     m_teo:
-        image: ghcr.io/emb3rs-project/m-grpc-teo:qa
+        image: ghcr.io/emb3rs-project/m-grpc-teo:dev
         ports:
             - '50053:50053'
         volumes:
@@ -155,7 +155,7 @@ services:
             - embers
 
     m_mm:
-        image: ghcr.io/emb3rs-project/m-grpc-market:qa
+        image: ghcr.io/emb3rs-project/m-grpc-market:dev
         ports:
             - '50054:50054'
         volumes:
@@ -171,7 +171,7 @@ services:
             - embers
 
     m_bm:
-        image: ghcr.io/emb3rs-project/m-grpc-business:qa
+        image: ghcr.io/emb3rs-project/m-grpc-business:dev
         ports:
             - '50055:50055'
         environment:
