@@ -3,22 +3,24 @@ version: '3'
 services:
     platform:
         build:
-            context: ../../platform/docker/8.1
-            dockerfile: Dockerfile
+            context: ../../platform
+            dockerfile: ../docker/Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
         image: sail-8.1/app
         depends_on:
             - pgsql
             - redis
-            - m_cf
             - ms_manager
+            - m_cf
         ports:
             - '${APP_PORT:-80}:80'
-            - '${SECURITY_APP_PORT:-443}:443'
+            - '${SSL_APP_PORT:-443}:443'
             - '${HMR_PORT:-8080}:8080'
         volumes:
-            - '../../platform:/var/www/html'
+            - '../../platform:/var/www'
+            - '../config/nginx.conf:/etc/nginx/sites-enabled/default'
+            - 'sail-pgsql:/var/lib/postgresql/data'
         environment:
             DB_DATABASE: '${DB_DATABASE}'
             DB_USERNAME: '${DB_USERNAME}'
@@ -27,10 +29,6 @@ services:
             GRPC_MANAGER_PORT: 50041
             GRPC_CF_HOST: m_cf
             GRPC_CF_PORT: 50051
-            WWWUSER: '${WWWUSER}'
-            LARAVEL_SAIL: 1
-            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
-            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         networks:
@@ -131,7 +129,7 @@ services:
         ports:
             - '50052:50052'
         volumes:
-            - './gurobi.lic:/app/gurobi.lic'
+            - '../config/gurobi.lic:/app/gurobi.lic'
         environment:
             GRPC_VERBOSITY: DEBUG
             GRPC_TRACE: http
@@ -147,7 +145,7 @@ services:
         ports:
             - '50053:50053'
         volumes:
-            - './gurobi.lic:/app/gurobi.lic'
+            - '../config/gurobi.lic:/app/gurobi.lic'
         environment:
             GRPC_VERBOSITY: DEBUG
             GRPC_TRACE: http
@@ -163,7 +161,7 @@ services:
         ports:
             - '50054:50054'
         volumes:
-            - './gurobi.lic:/app/gurobi.lic'
+            - '../config/gurobi.lic:/app/gurobi.lic'
         environment:
             GRPC_VERBOSITY: DEBUG
             GRPC_TRACE: http

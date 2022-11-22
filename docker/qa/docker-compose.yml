@@ -4,7 +4,7 @@ services:
     platform:
         build:
             context: ../../platform
-            dockerfile: Dockerfile
+            dockerfile: ../docker/Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
         image: sail-8.1/app
@@ -15,10 +15,12 @@ services:
             - m_cf
         ports:
             - '${APP_PORT:-80}:80'
+            - '${SSL_APP_PORT:-443}:443'
             - '${HMR_PORT:-8080}:8080'
         volumes:
+            - '../../platform:/var/www'
+            - '../config/nginx.conf:/etc/nginx/sites-enabled/default'
             - 'sail-pgsql:/var/lib/postgresql/data'
-            - '../../platform:/var/www/html'
         environment:
             DB_DATABASE: '${DB_DATABASE}'
             DB_USERNAME: '${DB_USERNAME}'
@@ -102,7 +104,7 @@ services:
             BM_HOST: m_bm
             BM_PORT: 50055
             DATABASE_URL: 'postgresql+psycopg2://${DB_USERNAME}:${DB_PASSWORD:-secret}@${DB_CONNECTION:-pgsql}:${DB_PORT:-5432}/${DB_DATABASE}'
-            GIS_TEO_ITERATION_MODE: True
+            GIS_TEO_ITERATION_MODE: 'True'
         command: "export PYTHONPATH=ms-grpc/plibs:module"
         extra_hosts:
             - 'host.docker.internal:host-gateway'
@@ -127,7 +129,7 @@ services:
         ports:
             - '50052:50052'
         volumes:
-            - './gurobi.lic:/app/gurobi.lic'
+            - '../config/gurobi.lic:/app/gurobi.lic'
         environment:
             GRPC_VERBOSITY: DEBUG
             GRPC_TRACE: http
@@ -143,7 +145,7 @@ services:
         ports:
             - '50053:50053'
         volumes:
-            - './gurobi.lic:/app/gurobi.lic'
+            - '../config/gurobi.lic:/app/gurobi.lic'
         environment:
             GRPC_VERBOSITY: DEBUG
             GRPC_TRACE: http
@@ -159,7 +161,7 @@ services:
         ports:
             - '50054:50054'
         volumes:
-            - './gurobi.lic:/app/gurobi.lic'
+            - '../config/gurobi.lic:/app/gurobi.lic'
         environment:
             GRPC_VERBOSITY: DEBUG
             GRPC_TRACE: http
