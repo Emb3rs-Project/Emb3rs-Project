@@ -35368,7 +35368,7 @@
       }
     ],
     "input_data": {
-      "actorshare": [0.5, 0.1, 0.1, 0.1, 0.1, 0.1, 0, 0, 0, 0, 0],
+      "actorshare": [1],
       "md": "pool",
       "rls": [
         ["source 1", "source 1 ext tech"],

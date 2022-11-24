@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime
 
 import grpc
 import jsonpickle
@@ -25,11 +26,16 @@ request = StartSimulationRequest(
     simulation_metadata=jsonpickle.encode(simulation_data["simulationMetadata"]),
     initial_data=jsonpickle.encode(simulation_data["initialData"]),
 )
-print("--> Requesting StartSimulation")
+
+start = datetime.now()
+print(f"--> [{start}] Requesting StartSimulation")
 response = manager.StartSimulation(request)
+end = datetime.now()
+print(f"--> [{end}] Finishing StartSimulation")
 
 print("--> Reading response from StartSimulation")
 output = StartSimulationResponseModel().from_grpc(response)
 print(f"--> Data: {output.dict()}")
 
-print("--> Finishing process")
+result = end - start
+print(f"--> Finishing process with time: {result}")
