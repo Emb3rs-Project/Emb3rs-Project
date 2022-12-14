@@ -129,6 +129,7 @@ services:
         ports:
             - '50052:50052'
         volumes:
+            - '../config/copt.lic:/app/copt.lic'
             - '../config/gurobi.lic:/app/gurobi.lic'
         environment:
             GRPC_VERBOSITY: DEBUG
@@ -136,7 +137,7 @@ services:
             GRPC_HOST: 0.0.0.0
             GRPC_PORT: 50052
             GRB_LICENSE_FILE: gurobi.lic
-        command: "export PYTHONPATH=ms-grpc/plibs:module"
+        command: "copt_licgen -file copt.lic"
         networks:
             - embers
 
@@ -145,6 +146,7 @@ services:
         ports:
             - '50053:50053'
         volumes:
+            - '../config/copt.lic:/app/copt.lic'
             - '../config/gurobi.lic:/app/gurobi.lic'
         environment:
             GRPC_VERBOSITY: DEBUG
@@ -152,7 +154,7 @@ services:
             GRPC_HOST: 0.0.0.0
             GRPC_PORT: 50053
             GRB_LICENSE_FILE: gurobi.lic
-        command: "export PYTHONPATH=ms-grpc/plibs:module"
+        command: "copt_licgen -file copt.lic"
         networks:
             - embers
 
@@ -161,6 +163,7 @@ services:
         ports:
             - '50054:50054'
         volumes:
+            - '../config/copt.lic:/app/copt.lic'
             - '../config/gurobi.lic:/app/gurobi.lic'
         environment:
             GRPC_VERBOSITY: DEBUG
@@ -168,7 +171,7 @@ services:
             GRPC_HOST: 0.0.0.0
             GRPC_PORT: 50054
             GRB_LICENSE_FILE: gurobi.lic
-        command: "export PYTHONPATH=ms-grpc/plibs:module"
+        command: "copt_licgen -file copt.lic"
         networks:
             - embers
 
