@@ -115,7 +115,7 @@ services:
             BM_PORT: 50055
             DATABASE_URL: 'postgresql+psycopg2://${DB_USERNAME}:${DB_PASSWORD:-secret}@${DB_CONNECTION:-pgsql}:${DB_PORT:-5432}/${DB_DATABASE}'
             REDIS_HOST: '${REDIS_HOST:-redis}'
-            REDIS_PORT: '${REDIS_PORT:-6379}:6379'
+            REDIS_PORT: '${REDIS_PORT:-6379}'
             REDIS_PASSWORD: '${REDIS_PASSWORD:-redis}'
             GIS_TEO_ITERATION_MODE: 'True'
         command: "export PYTHONPATH=ms-grpc/plibs:module"

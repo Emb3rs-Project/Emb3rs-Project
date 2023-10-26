@@ -26,7 +26,7 @@ services:
             DB_USERNAME: '${DB_USERNAME}'
             DB_PASSWORD: '${DB_PASSWORD:-secret}'
             REDIS_HOST: '${REDIS_HOST:-redis}'
-            REDIS_PORT: '${REDIS_PORT:-6379}:6379'
+            REDIS_PORT: '${REDIS_PORT:-6379}'
             REDIS_PASSWORD: '${REDIS_PASSWORD:-redis}'
             GRPC_MANAGER_HOST: ms_manager
             GRPC_MANAGER_PORT: 50041
@@ -99,25 +99,8 @@ services:
         ports:
             - '50041:50041'
         environment:
-            GRPC_VERBOSITY: DEBUG
-            GRPC_TRACE: http
-            GRPC_HOST: 0.0.0.0
-            GRPC_PORT: 50041
-            CF_HOST: m_cf
-            CF_PORT: 50051
-            GIS_HOST: m_gis
-            GIS_PORT: 50052
-            TEO_HOST: m_teo
-            TEO_PORT: 50053
-            MM_HOST: m_mm
-            MM_PORT: 50054
-            BM_HOST: m_bm
-            BM_PORT: 50055
+            GRPC_PORT: '${GRPC_PORT:-50041}'
             DATABASE_URL: 'postgresql+psycopg2://${DB_USERNAME}:${DB_PASSWORD:-secret}@${DB_CONNECTION:-pgsql}:${DB_PORT:-5432}/${DB_DATABASE}'
-            REDIS_HOST: '${REDIS_HOST:-redis}'
-            REDIS_PORT: '${REDIS_PORT:-6379}:6379'
-            REDIS_PASSWORD: '${REDIS_PASSWORD:-redis}'
-            GIS_TEO_ITERATION_MODE: 'True'
         command: "export PYTHONPATH=ms_grpc/plibs:module"
         extra_hosts:
             - 'host.docker.internal:host-gateway'
@@ -125,49 +108,46 @@ services:
             - embers
 
     m_cf:
-        image: ghcr.io/emb3rs-project/m-grpc-core-functionalities:dev
+        image: m-grpc-cf
         ports:
             - '50051:50051'
         environment:
-            GRPC_VERBOSITY: DEBUG
-            GRPC_TRACE: http
-            GRPC_HOST: 0.0.0.0
-            GRPC_PORT: 50051
+            GRPC_PORT: '${CF_PORT:-50051}'
         command: "export PYTHONPATH=ms_grpc/plibs:module"
         networks:
             - embers
 
     m_gis:
         image: ghcr.io/emb3rs-project/m-grpc-gis:dev
+        # mac_address: 00:00:0X:XX:00:00
         ports:
             - '50052:50052'
         volumes:
-            - '../config/copt.lic:/app/copt.lic'
-            - '../config/gurobi.lic:/app/gurobi.lic'
+            - '../config/licenses/copt.lic:/app/copt.lic'
+            - '../config/licenses/gurobi.lic:/app/gurobi.lic'
         environment:
             GRPC_VERBOSITY: DEBUG
             GRPC_TRACE: http
             GRPC_HOST: 0.0.0.0
-            GRPC_PORT: 50052
+            GRPC_PORT: '${GIS_PORT:-50052}'
             GRB_LICENSE_FILE: gurobi.lic
-        command: "copt_licgen -file copt.lic"
         networks:
             - embers
 
     m_teo:
         image: ghcr.io/emb3rs-project/m-grpc-teo:dev
+        # mac_address: 00:00:0X:XX:00:00
         ports:
             - '50053:50053'
         volumes:
-            - '../config/copt.lic:/app/copt.lic'
-            - '../config/gurobi.lic:/app/gurobi.lic'
+            - '../config/licenses/copt.lic:/app/copt.lic'
+            - '../config/licenses/gurobi.lic:/app/gurobi.lic'
         environment:
             GRPC_VERBOSITY: DEBUG
             GRPC_TRACE: http
             GRPC_HOST: 0.0.0.0
-            GRPC_PORT: 50053
+            GRPC_PORT: '${TEO_PORT:-50053}'
             GRB_LICENSE_FILE: gurobi.lic
-        command: "copt_licgen -file copt.lic"
         networks:
             - embers
 
@@ -176,15 +156,14 @@ services:
         ports:
             - '50054:50054'
         volumes:
-            - '../config/copt.lic:/app/copt.lic'
-            - '../config/gurobi.lic:/app/gurobi.lic'
+            - '../config/licenses/copt.lic:/app/copt.lic'
+            - '../config/licenses/gurobi.lic:/app/gurobi.lic'
         environment:
             GRPC_VERBOSITY: DEBUG
             GRPC_TRACE: http
             GRPC_HOST: 0.0.0.0
-            GRPC_PORT: 50054
+            GRPC_PORT: '${MM_PORT:-50054}'
             GRB_LICENSE_FILE: gurobi.lic
-        command: "copt_licgen -file copt.lic"
         networks:
             - embers
 
@@ -196,7 +175,7 @@ services:
             GRPC_VERBOSITY: DEBUG
             GRPC_TRACE: http
             GRPC_HOST: 0.0.0.0
-            GRPC_PORT: 50055
+            GRPC_PORT: '${BM_PORT:-50055}'
         command: "export PYTHONPATH=ms-grpc/plibs:module"
         networks:
             - embers

@@ -1,7 +1,5 @@
 FROM ubuntu:22.04
 
-LABEL maintainer="Taylor Otwell"
-
 ARG WWWGROUP
 ARG NODE_VERSION=16
 ARG POSTGRES_VERSION=14

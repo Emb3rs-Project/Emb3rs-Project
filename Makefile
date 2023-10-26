@@ -22,6 +22,12 @@ DEV_DOCKER_ENV_FILE := docker/dev/.env.dev
 DEV_DOCKER_COMPOSE_FILE := docker/dev/docker-compose.yml
 DEV_DOCKER_BASE_CMD := docker-compose -f ${DEV_DOCKER_COMPOSE_FILE} --env-file ${DEV_DOCKER_ENV_FILE}
 
+install-dev-copt-license:
+	@echo '--> Installing COPT License'
+	@${DEV_DOCKER_BASE_CMD} exec m_gis copt_licgen -file copt.lic && mv license.* /opt/copt60/"
+	@${DEV_DOCKER_BASE_CMD} exec m_teo copt_licgen -file copt.lic && mv license.* /opt/copt60/"
+	@${DEV_DOCKER_BASE_CMD} exec m_mm copt_licgen -file copt.lic && mv license.* /opt/copt60/"
+
 install-dev:
 	@echo '--> Initializing DEV requirements'
 	@sed -i 's+git@github.com:+https://github.com/+g' .gitmodules

@@ -1,0 +1,5 @@
+# Put your Gurobi WLS license here
+# Visit https://license.gurobi.com/manager/doc/overview for more information.
+WLSACCESSID=<WLSACCESSID>
+WLSSECRET=<WLSSECRET>
+LICENSEID=<LICENSEID>
